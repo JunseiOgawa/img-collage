@@ -8,7 +8,7 @@ class TaskSerializer(serializers.ModelSerializer):
 
     def validate_image(self, value):
         if value:
-            if value.size > 1024 * 1024 * 200:  # 8Kの時用に200MBの制約に変更
+            if value.size > 1024 * 1024 * 200:  # 8Kの時用に200MBの制約に変更バイト計算です
                 raise serializers.ValidationError("画像サイズは200MB以下にしてください。")
             if not value.content_type.startswith('image/'):
                 raise serializers.ValidationError("アップロードできるのは画像ファイルのみです。")
