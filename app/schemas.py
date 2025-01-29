@@ -1,18 +1,20 @@
+from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel
 
-class TaskBase(BaseModel):
-    title: str
-    completed: bool = False
+class ImageMetadataBase(BaseModel):
+    original_path: str
+    proxy_path: str
+    capture_date: datetime
+    scene_description: str
+    similarity_score: float
 
-class TaskCreate(TaskBase):
+class ImageMetadataCreate(ImageMetadataBase):
     pass
 
-class Task(TaskBase):
+class ImageMetadata(ImageMetadataBase):
     id: int
     created_at: datetime
-    image_path: Optional[str] = None
 
     class Config:
-        from_attributes = True
+        orm_mode = True

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    
+<head>
+    <title>テスト用なので実際は消します</title>
+</head>
+<body>
+    <h2>画像アップロードテスト</h2>
+    
+    <form id="uploadForm">
+        <input type="file" id="imageInput" accept="image/*" required>
+        <button type="submit">アップロード</button>
+    </form>
+
+    <h3>アップロード結果:</h3>
+    <pre id="result"></pre>
+
+    <h3>プロキシ画像プレビュー:</h3>
+    <img id="preview" style="max-width: 500px;">
+
+    <script>
+        document.getElementById('uploadForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const resultElement = document.getElementById('result');
+            resultElement.textContent = 'アップロード中...';
+
+            try {
+                const formData = new FormData();
+                const fileInput = document.getElementById('imageInput');
+                
+                if (!fileInput.files || fileInput.files.length === 0) {
+                    throw new Error('ファイルが選択されていません');
+                }
+
+                formData.append('file', fileInput.files[0]);
+
+                const response = await fetch('/api/v1/upload/', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+                }
+
+                const data = await response.json();
+                resultElement.textContent = JSON.stringify(data, null, 2);
+                
+                document.getElementById('preview').src = `/${data.proxy_path}`;
+            } catch (error) {
+                console.error('Error:', error);
+                resultElement.textContent = `エラー: ${error.message}`;
+            }
+        };
+    </script>
+</body>
+</html>
